@@ -9,4 +9,8 @@
 - upload file database
 - setting file koneksi.php di folder include
 
+# Login
+- Username : admin
+- Password : 123
+
 # Progress 40%
