@@ -8,3 +8,5 @@
 # Cara Install
 - upload file database
 - setting file koneksi.php di folder include
+
+# Progress 40%
