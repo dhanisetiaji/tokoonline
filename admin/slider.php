@@ -9,21 +9,40 @@ header('location:index.php');
 else{
     if(isset($_GET['del'])){
         $id=$_GET['del'];
-        $sql = "delete from product  WHERE id=:id";
+        $sql = "delete from slider  WHERE id=:id";
         $query = $dbh->prepare($sql);
         $query -> bindParam(':id',$id, PDO::PARAM_STR);
         $query -> execute();
         $msg="Data Berhasil dihapus";
     }
-    if(isset($_POST['updatestok'])){
+    if(isset($_POST['update'])){
+        $gambar=$_FILES["gambar"]["name"];
         $id=$_POST['id'];
-        $stok=$_POST['stok'];
-        $sql1 = "update product set stok_produk=:stok WHERE id=:id";
-        $queri = $dbh->prepare($sql1);
-        $queri -> bindParam(':id',$id, PDO::PARAM_STR);
-        $queri -> bindParam(':stok',$stok, PDO::PARAM_STR);
-        $queri -> execute();
-        $msg="Stok Berhasil diupdate";
+        move_uploaded_file($_FILES["gambar"]["tmp_name"],"img/slider/".$_FILES["gambar"]["name"]);
+        $sql="update slider set gambar_slider=:gambar where id=:id";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':gambar',$gambar,PDO::PARAM_STR);
+        $query->bindParam(':id',$id,PDO::PARAM_STR);
+        $query->execute();    
+        $msg="Gambar berhasil diupdate";
+    }
+    if(isset($_POST['submit'])){
+        $namaslid = $_POST['nama'];
+        $gambar = $_FILES["gambar"]["name"];
+        move_uploaded_file($_FILES["gambar"]["tmp_name"],"img/slider/".$_FILES["gambar"]["name"]);
+
+        $sql="insert into slider(nama,gambar_slider) values(:namaslid,:gambar)";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':namaslid',$namaslid,PDO::PARAM_STR);
+        $query->bindParam(':gambar',$gambar,PDO::PARAM_STR);
+        $query->execute();
+        $lastInsertId = $dbh->lastInsertId();
+        if($lastInsertId){
+            $msg="Slider Berhasil ditambahkan";
+        }
+        else {
+            $error="Terjadi kesalahan. Coba lagi!";
+        }
     }
 ?>
 <!DOCTYPE html>
@@ -101,11 +120,12 @@ else{
           <div class="col-12">
           <div class="card">
               <div class="card-header">
-                <a href="tambah-produk.php" class="btn btn-primary mb-3"><i class="fas fa-plus"></i> Tambah Produk</a>
+                <!-- <a href="tambah-produk.php" class="btn btn-success mb-3"><i class="fas fa-plus"></i> Tambah Produk</a> -->
+                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#AddModal"><i class="fas fa-plus"></i> Tambah Produk</button>
                 <?php 
                     if($error){
                 ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert"><?php echo htmlentities($error); ?> 
+                <br><div class="alert alert-danger alert-dismissible fade show" role="alert"><?php echo htmlentities($error); ?> 
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -113,7 +133,7 @@ else{
                 <?php } 
 				    else if($msg){
                 ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert"><?php echo htmlentities($msg); ?> 
+                <br><div class="alert alert-success alert-dismissible fade show" role="alert"><?php echo htmlentities($msg); ?> 
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -126,22 +146,14 @@ else{
                 <thead>
                   <tr>
                     <th>No</th>
-                    <th>Nama Produk</th>
-                    <th>Kategori</th>
-                    <th>Harga</th>
-                    <th>Stok</th>
+                    <th>Nama Slider</th>
+                    <th>Update Date</th>
                     <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <?php 
-                    function rupiah($angka){
-	
-                        $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-                        return $hasil_rupiah;
-                     
-                    }
-                        $sql = "select product.id,product.nama_produk,product.id_kategori,product.stok_produk,product.harga_produk,kategori.Namakategori from product join kategori on kategori.id=product.id_kategori";
+                  <?php
+                        $sql = "select * from slider";
                         $query = $dbh -> prepare($sql);
                         $query->execute();
                         $results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -152,44 +164,45 @@ else{
                   <tr>
                       
                     <td><?php echo htmlentities($nmr);?></td>
-                    <td><?php echo htmlentities($res->nama_produk);?></td>
-                    <td><?php echo htmlentities($res->Namakategori);?></td>
-                    <td><?php echo rupiah($res->harga_produk);?></td>
-                    <td><?php echo htmlentities($res->stok_produk);?> <button type="button" class="btn btn-default" data-toggle="modal" data-target="#MyModal<?php echo $res->id;?>">edit</button></td>
+                    <td><?php echo htmlentities($res->nama);?></td>
+                    <td><?php echo htmlentities($res->UpdateDate);?></td>
                     <td>
-                         <a href="change-produk.php?id=<?php echo $res->id;?>" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
-                         <a href="produk.php?del=<?php echo $res->id;?>" onclick="return confirm('Do you want to delete');" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                        <a type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#MyModal<?php echo $res->id;?>"><i class="fas fa-edit"></i></a>
+                         <a href="slider.php?del=<?php echo $res->id;?>" onclick="return confirm('Do you want to delete');" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
                     </td>
                   </tr>
-                  <div class="modal fade" id="MyModal<?php echo $res->id;?>">
+                  <!-- MODAL UPDATE -->
+                <div class="modal fade" id="MyModal<?php echo $res->id;?>">
                     <div class="modal-dialog" >
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h4 class="modal-title">Update Stok</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Update Slider</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" role="form" method="post" onSubmit="return valid();" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <input type="hidden" name="id" class="form-control" value="<?php echo htmlentities($res->id)?>">
+                                        <br><img src="img/slider/<?php echo htmlentities($res->gambar_slider);?>" class="w-50" style="border:solid 1px #000">
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="">Gambar</label>
+                                      <input type="file" name="gambar" class="form-control" required>
+                                      <button Type="submit" name="update" class="btn btn-primary mt-4">Update Gambar</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <form action="" role="form" method="post" onSubmit="return valid();">
-                                <div class="form-group">
-                                    <label for="">Stok</label>
-                                    <input type="hidden" name="id" class="form-control" value="<?php echo htmlentities($res->id)?>" required>
-                                    <input type="text" name="stok" class="form-control" value="<?php echo htmlentities($res->stok_produk)?>" required>
-                                    <button Type="submit" name="updatestok" class="btn btn-primary mt-4">Update Stok</button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        
-                        </div>
-                    </div>
                     <!-- /.modal-content -->
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
-                <!-- /.modal -->
+                <!-- /.END modal UPDATE -->
                   <?php $nmr=$nmr+1; } } ?>
                   </tbody>
                 </table>
@@ -202,6 +215,38 @@ else{
         </div>
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
+        <!-- MODAL ADD -->
+        <div class="modal fade" id="AddModal">
+            <div class="modal-dialog" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Tambah Slider</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" role="form" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="">Nama Slider</label>
+                                <input type="text" name="nama" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Gambar</label>
+                                <input type="file" name="gambar" class="form-control" required>
+                            </div>
+                            <button Type="submit" name="submit" class="btn btn-primary mt-4">Save</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.END modal ADD -->
     </section>
     <!-- /.content -->
   </div>

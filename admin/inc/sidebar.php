@@ -56,6 +56,14 @@
             </a>
           </li>
           <li class="nav-item">
+            <a href="slider.php" class="nav-link">
+              <i class="nav-icon fas fa-images"></i>
+              <p>
+                Slider
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="users.php" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
               <p>
