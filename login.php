@@ -1,3 +1,55 @@
+<?php
+session_start();
+error_reporting(0);
+include('./include/koneksi.php');
+if(strlen($_SESSION['login'])!=0){	
+    header('location:index.php');
+    }
+else{
+if(isset($_POST['login'])){
+  $username=$_POST['username'];
+  $password=md5($_POST['password']);
+  $sql ="SELECT Username,Password FROM users WHERE Username=:username and Password=:password";
+  $query= $dbh -> prepare($sql);
+  $query-> bindParam(':username', $username, PDO::PARAM_STR);
+  $query-> bindParam(':password', $password, PDO::PARAM_STR);
+  $query-> execute();
+  $results=$query->fetchAll(PDO::FETCH_OBJ);
+  if($query->rowCount() > 0){
+    $_SESSION['login']=$_POST['username'];
+    echo "<script type='text/javascript'> document.location = 'dashboard.php'; </script>";
+  } else{
+    echo "<script>alert('Login Gagal. Username/Password salah!');</script>";
+  }
+}
+if(isset($_POST['daftar'])){
+    $email=$_POST['email'];
+    $username=$_POST['username'];
+    $password=md5($_POST['password']);
+    $nama=$_POST['nama'];
+    $alamat=$_POST['alamat'];
+    $kodepos=$_POST['kodepos'];
+    $telepon=$_POST['telepon'];
+    $sql="INSERT INTO users(NamaLengkap,Email,Username,Password,Alamat,Kodepos,No_telepon) VALUES(:nama,:email,:username,:password,:alamat,:kodepos,:telepon)";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':email',$email,PDO::PARAM_STR);
+    $query->bindParam(':username',$username,PDO::PARAM_STR);
+    $query->bindParam(':password',$password,PDO::PARAM_STR);
+    $query->bindParam(':nama',$nama,PDO::PARAM_STR);
+    $query->bindParam(':alamat',$alamat,PDO::PARAM_STR);
+    $query->bindParam(':kodepos',$kodepos,PDO::PARAM_STR);
+    $query->bindParam(':telepon',$email,PDO::PARAM_STR);
+    $query->execute();
+    $lastInsertId = $dbh->lastInsertId();
+    if($lastInsertId){
+        echo "<script>alert('Berhasil mendaftar, Silahkan login!');</script>";
+    }
+    else {
+        echo "<script>alert('Daftar Gagal. Cek kembali data anda!');</script>";
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,7 +120,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="">Password</label>
-                                                <input type="pasword" name="password" class="form-control">
+                                                <input type="password" name="password" class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <label for="">Nama Lengkap</label>
@@ -143,3 +195,4 @@
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
+<?php } ?>

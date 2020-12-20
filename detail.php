@@ -1,6 +1,7 @@
-<?php
-error_reporting(0);
-include('./include/koneksi.php');
+<?php 
+    session_start();
+    include('include/koneksi.php');
+    error_reporting(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,33 +16,7 @@ include('./include/koneksi.php');
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
-    <header class="bg-nav fixed-top">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light px-lg-0">
-                <a class="navbar-brand mr-3 " href="index.php"><img src="./assets/img/logo.png" alt="" width="60" height="60" >    Maripakai.co</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-                    <ul class="navbar-nav navbar-custom">
-                        <!-- <li class="nav-item "> <a href="Anak.html" class="nav-link">Anak</a> </li> -->
-                    </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item d-flex align-items-center">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search">
-                                <div class="input-group-append">
-                                  <button class="btn btn-outline-secondary searching" type="button" ><i class="las la-search"></i></button>
-                                </div>
-                              </div>
-                        </li>
-                        <li><a class="nav-link" href="keranjang.php"><i class="la la-shopping-cart" style="font-size:30px;"></i></a></li>
-                        <li class="nav-item d-flex align-items-center"> <a href="login.php" class="btn btn-md btn-primary">LOGIN</a> </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php include('include/header.php');?>
     <section class="main">
         <div class="container">
                 <?php 
@@ -79,23 +54,33 @@ include('./include/koneksi.php');
                     <div class="card border-0">
                         <div class="card-body">
                         <form method="POST" action="keranjang.php">
-                            <input type="text" name="id_produk" value="<?= $res->id; ?>"/>
-                            <input type="text" name="nama_produk" value="<?= $res->nama_produk; ?>"/>
-                            <input type="text" name="harga" value="<?= $res->harga_produk; ?>"/>
+                            <input type="hidden" name="id_produk" value="<?= $res->id; ?>"/>
+                            <input type="hidden" name="nama_produk" value="<?= $res->nama_produk; ?>"/>
+                            <input type="hidden" name="harga" value="<?= $res->harga_produk; ?>"/>
                             <h3><?php echo htmlentities($res->nama_produk);?></h3>
                               <hr>
                               <p>Stok : <?php echo htmlentities($res->stok_produk);?></p>
                               <p>Quantity :</p>
-                              <select name="qty" class="custom-select w-50" required>
-                                <option value="">Select</option>
+                              <select name="qty" class="custom-select w-50">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
+                                <option value="4">4</option>
                               </select>
                               
                               <hr>
-                              <a href="keranjang.php">
-                              <button class="btn btn-primary w-100" type="submit" name="submit">Add to Cart</button></a>
+                                <?php   if(strlen($_SESSION['login'])==0)
+                                    {
+                                ?>
+                                <a href="login.php">
+                                    <button class="btn btn-primary w-100" type="submit" name="submit">Login Terlebih dahulu!</button>
+                                </a>
+                                <?php }else{ 
+                                ?>
+                                <a href="keranjang.php">
+                                    <button class="btn btn-primary w-100" type="submit" name="submit">Add to Cart</button>
+                                </a><?php
+                                } ?>
                         </form>
                               <hr>
                               <p style="font-size: 10px;">Put a bird on it..your chest that is.Supersoft tri-band shirt that feels like the tee you've had since high school, but with a bird on it</p>

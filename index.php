@@ -1,5 +1,7 @@
-<?php
-include('./include/koneksi.php');
+<?php 
+session_start();
+include('include/koneksi.php');
+error_reporting(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,33 +17,7 @@ include('./include/koneksi.php');
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
-    <header class="bg-nav fixed-top">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light px-lg-0">
-                <a class="navbar-brand mr-3 " href="index.php"><img src="./assets/img/logo.png" alt="" width="60" height="60" >    Maripakai.co</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-                    <ul class="navbar-nav navbar-custom">
-                        <!-- <li class="nav-item "> <a href="index.html" class="nav-link text-danger font-weight-bolder">Home</a> </li> -->
-                    </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item d-flex align-items-center">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search">
-                                <div class="input-group-append">
-                                  <button class="btn btn-outline-secondary searching" type="button" ><i class="las la-search"></i></button>
-                                </div>
-                              </div>
-                        </li>
-                        <li><a class="nav-link" href="Tas.html"><i class="la la-shopping-cart" style="font-size:30px;"></i></a></li>
-                        <li class="nav-item d-flex align-items-center"> <a href="login.php" class="btn btn-md btn-primary">LOGIN</a> </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php include('include/header.php');?>
     <section class="main">
         <div class="container">
             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 17 Des 2020 pada 03.08
+-- Waktu pembuatan: 20 Des 2020 pada 12.58
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.2.33
 
@@ -83,8 +83,31 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `nama_produk`, `id_kategori`, `deskripsi_produk`, `stok_produk`, `harga_produk`, `gambar_produk`) VALUES
-(1, 'Anti Social Social Club', 1, 'ASSC new original', 4, '1250000', '972e6995cfbd4e777236f61394d267a2.jpg'),
-(2, 'NASA Sweater', 3, 'NASA brand hnm new ori. untuk cewe', 2, '250000', 'hmgoepprod.jpg');
+(1, 'Anti Social Social Club', 1, 'ASSC new original', 5, '1250000', '972e6995cfbd4e777236f61394d267a2.jpg'),
+(2, 'NASA Sweater', 3, 'NASA brand hnm new ori. untuk cewe', 3, '250000', 'hmgoepprod.jpg'),
+(3, 'H&M Polos Hitam', 3, 'HnM polos warna hitam. brand new with tag.\r\nukuran M', 2, '250000', 'hmgoepprod (1).jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `slider`
+--
+
+CREATE TABLE `slider` (
+  `id` int(11) NOT NULL,
+  `nama` varchar(120) NOT NULL,
+  `gambar_slider` varchar(120) NOT NULL,
+  `UpdateDate` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `slider`
+--
+
+INSERT INTO `slider` (`id`, `nama`, `gambar_slider`, `UpdateDate`) VALUES
+(1, 'slider 1', 'slider1.jpg', '2020-12-18 07:20:16'),
+(2, 'slider 2', 'men4.jpg', '2020-12-18 07:16:39'),
+(3, 'slider 3', 'kid6.jpg', '2020-12-18 07:17:02');
 
 -- --------------------------------------------------------
 
@@ -120,6 +143,13 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Dumping data untuk tabel `users`
+--
+
+INSERT INTO `users` (`id`, `NamaLengkap`, `Email`, `Username`, `Password`, `Alamat`, `Kodepos`, `No_telepon`, `RegisDate`) VALUES
+(1, 'pembeli', 'coba@gmail.com', 'pembeli', '202cb962ac59075b964b07152d234b70', 'asdasdasd', '313123', 0, '2020-12-20 10:30:48');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -139,6 +169,12 @@ ALTER TABLE `kategori`
 -- Indeks untuk tabel `product`
 --
 ALTER TABLE `product`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indeks untuk tabel `slider`
+--
+ALTER TABLE `slider`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -173,7 +209,13 @@ ALTER TABLE `kategori`
 -- AUTO_INCREMENT untuk tabel `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT untuk tabel `slider`
+--
+ALTER TABLE `slider`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `transaksi`
@@ -185,7 +227,7 @@ ALTER TABLE `transaksi`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

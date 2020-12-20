@@ -2,49 +2,55 @@
 <?php 
 // session_unset('cart_item');
 // die();
-session_start();
 // session_destroy();die();
+session_start();
 echo "<pre>";
 var_dump($_SESSION['cart_item']);
 echo "</pre>";
-if (!empty($_POST['qty'])) {
- 
-    $id_produk = $_POST['id_produk'];
-    $nama_produk = $_POST['nama_produk'];
-    $qty = $_POST['qty'];
-    $harga = $_POST['harga'];
+error_reporting(0);
+include('./include/koneksi.php');
+if(strlen($_SESSION['login'])==0){	
+    header('location:login.php');
+    }
+else{
+    if (!empty($_POST['qty'])) {
     
-    $itemArray = array(
-                    $id_produk=>array(
-                            'nama_produk'=>$nama_produk, 
-                            'qty'=>$qty, 
-                            'harga'=>$harga
-                        )
-                );
-		
-		if(!empty($_SESSION["cart_item"])) {
-            echo "asdasdasd";
-			if(in_array($id_produk,array_keys($_SESSION["cart_item"]))) {
-				foreach($_SESSION["cart_item"] as $k => $v) {
-						if($id_produk == $k) {
-							if(empty($_SESSION["cart_item"][$k]["qty"])) {
-								$_SESSION["cart_item"][$k]["qty"] = 0;
-							}
-							$_SESSION["cart_item"][$k]["qty"] += $_POST["qty"];
-						}
-				}
-			} else {
-				$_SESSION["cart_item"] = array_merge($_SESSION["cart_item"],$itemArray);
-			}
-		} else {
-            echo "2";
-			$_SESSION["cart_item"] = $itemArray;
-        }
-        // echo "hake";
-        // print_r($itemArray);
+        $id_produk = $_POST['id_produk'];
+        $nama_produk = $_POST['nama_produk'];
+        $qty = $_POST['qty'];
+        $harga = $_POST['harga'];
         
+        $itemArray = array(
+                        $id_produk=>array(
+                                'nama_produk'=>$nama_produk, 
+                                'qty'=>$qty, 
+                                'harga'=>$harga
+                            )
+                    );
+            
+            if(!empty($_SESSION["cart_item"])) {
+                // echo "asdasdasd";
+                if(in_array($id_produk,array_keys($_SESSION["cart_item"]))) {
+                    foreach($_SESSION["cart_item"] as $k => $v) {
+                            if($id_produk == $k) {
+                                if(empty($_SESSION["cart_item"][$k]["qty"])) {
+                                    $_SESSION["cart_item"][$k]["qty"] = 0;
+                                }
+                                $_SESSION["cart_item"][$k]["qty"] += $_POST["qty"];
+                            }
+                    }
+                } else {
+                    $_SESSION["cart_item"] = array_merge($_SESSION["cart_item"],$itemArray);
+                }
+            } else {
+                // echo "2";
+                $_SESSION["cart_item"] = $itemArray;
+            }
+            // echo "hake";
+            // print_r($itemArray);
+            
 
-   }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,36 +65,7 @@ if (!empty($_POST['qty'])) {
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
-    <header class="bg-nav fixed-top">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light px-lg-0">
-                <a class="navbar-brand mr-3 " href="index.php"><img src="./assets/img/logo.png" alt="" width="60" height="60" >    Maripakai.co</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-                    <ul class="navbar-nav navbar-custom">
-                        <!-- <li class="nav-item "> <a href="index.html" class="nav-link">Home</a> </li>
-                        <li class="nav-item "> <a href="Pria.html" class="nav-link">Pria</a> </li>
-                        <li class="nav-item "> <a href="Wanita.html" class="nav-link">Wanita</a> </li> -->
-                        <!-- <li class="nav-item "> <a href="Anak.html" class="nav-link">Anak</a> </li> -->
-                    </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item d-flex align-items-center">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search">
-                                <div class="input-group-append">
-                                  <button class="btn btn-outline-secondary searching" type="button" ><i class="las la-search"></i></button>
-                                </div>
-                              </div>
-                        </li>
-                        <li><a class="nav-link" href="keranjang.html"><i class="la la-shopping-cart" style="font-size:30px;"></i></a></li>
-                        <li class="nav-item d-flex align-items-center"> <a href="login.php" class="btn btn-md btn-primary">LOGIN</a> </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php include('include/header.php');?>
     <section class="main">
         <div class="container">
             <div class="row">
@@ -102,55 +79,41 @@ if (!empty($_POST['qty'])) {
                         <p style="color: gray;">Alamat: Lorem ipsum dolor sit amet.</p>
                         </div>
                     <hr>
+                    <?php
+                        function rupiah($angka){
+        
+                            $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+                            return $hasil_rupiah;
+                        
+                        }
+                        $totalbayar;
+                        if (!empty($_SESSION["cart_item"])) { 
+                            foreach($_SESSION["cart_item"] as $value){
+                            $total=$value['qty']*$value['harga'];
+                            $totalbayar+=$total;
+                    ?>
                     <div class="row">
                         <div class="col-md">
                             <img src="./assets/img/produk1.jpg" alt="" class="mx-auto w-50 rounded">
                         </div>
                         <div class="col-md">
                             <label for="">Nama Barang</label>
-                            <p style="color: gray;font-size: 18px;">produk 1</p>
-                        </div>
-                        <div class="col-md">
-                            <label for="">Size</label>
-                            <p style="color: gray;font-size: 18px;">X</p>
+                            <p style="color: gray;font-size: 18px;"><?php echo $value['nama_produk'];?></p>
                         </div>
                         <div class="col-md">
                             <label for="">Jumlah</label>
-                            <select name="" id="" class="form-control">
-                                <option value="">X</option>
-                            </select>
+                            <p style="color: gray;font-size: 18px;"><?php echo $value['qty'];?></p>
                         </div>
                         <div class="col-md" id="harga">
                             <label for="">Harga</label>
-                            <p style="color: gray;font-size: 18px;">Rp.99.000</p>
+                            <p style="color: gray;font-size: 18px;"><?php echo rupiah($total);?></p>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md">
-                            <img src="./assets/img/produk1.jpg" alt="" class="mx-auto w-50 rounded">
-                        </div>
-                        <div class="col-md">
-                            <label for="">Nama Barang</label>
-                            <p style="color: gray;font-size: 18px;">produk 1</p>
-                        </div>
-                        <div class="col-md">
-                            <label for="">Size</label>
-                            <p style="color: gray;font-size: 18px;">X</p>
-                        </div>
-                        <div class="col-md">
-                            <label for="">Jumlah</label>
-                            <select name="" id="" class="form-control">
-                                <option value="">X</option>
-                            </select>
-                        </div>
-                        <div class="col-md">
-                            <label for="">Harga</label>
-                            <p style="color: gray;font-size: 18px;">Rp.99.000</p>
-                        </div>
-                    </div>
+                    <?php }} ?>
                     <hr>
                     <div class="text-right">
-                        <p>Subtotal : Rp.198.000</p>
+                        <p>Subtotal : <?php echo rupiah($totalbayar);?>
+                        </p>
                     </div>
                     <hr>
                 </div>
@@ -161,16 +124,16 @@ if (!empty($_POST['qty'])) {
                             <hr>
                             <div class="d-flex justify-content-between">
                                 <p>Total Harga</p>
-                                <p>Rp.198.000</p>
+                                <p><?php echo rupiah($totalbayar);?></p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Total Ongkos Kirim</p>
-                                <p>Rp.12.000</p>
+                                <p>Rp.22.000</p>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between">
                                 <p>Total Pembayaran</p>
-                                <p>Rp.210.000</p>
+                                <p><?php echo rupiah($totalbayar);?></p>
                             </div>
                             <a href="Metode Pembayaran.html"><button class="btn btn-primary w-100 font-weight-bolder">BELI</button></a>
                             <div class="input-group m-3">
@@ -241,3 +204,4 @@ if (!empty($_POST['qty'])) {
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
+<?php } ?>
