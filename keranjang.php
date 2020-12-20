@@ -1,56 +1,33 @@
-
 <?php 
-// session_unset('cart_item');
-// die();
-// session_destroy();die();
 session_start();
-echo "<pre>";
-var_dump($_SESSION['cart_item']);
-echo "</pre>";
-error_reporting(0);
 include('./include/koneksi.php');
+error_reporting(0);
+
+$sid = $_SESSION['login'];
+$sql = "select * from cart_tmp WHERE username=:sid";
+$query = $dbh->prepare($sql);
+$query -> bindParam(':sid',$sid);
+$query -> execute();
+$results=$query->fetchAll();
+
+// $q=mysql_query("SELECT * from cart_tmp WHERE username='$sid'");
+if($query->rowCount() < 1){
+    echo "<script>window.alert('Keranjang Belanjanya masih kosong. Silahkan Anda berbelanja terlebih dahulu');
+        window.location=('./index.php')</script>";
+}
+if(isset($_GET['del'])){
+    $id=$_GET['del'];
+    $sql = "delete from cart_tmp  WHERE id_cart_tmp=:id";
+    $query = $dbh->prepare($sql);
+    $query -> bindParam(':id',$id, PDO::PARAM_STR);
+    $query -> execute();
+    $msg="Data Berhasil dihapus";
+}
+
 if(strlen($_SESSION['login'])==0){	
     header('location:login.php');
     }
-else{
-    if (!empty($_POST['qty'])) {
-    
-        $id_produk = $_POST['id_produk'];
-        $nama_produk = $_POST['nama_produk'];
-        $qty = $_POST['qty'];
-        $harga = $_POST['harga'];
-        
-        $itemArray = array(
-                        $id_produk=>array(
-                                'nama_produk'=>$nama_produk, 
-                                'qty'=>$qty, 
-                                'harga'=>$harga
-                            )
-                    );
-            
-            if(!empty($_SESSION["cart_item"])) {
-                // echo "asdasdasd";
-                if(in_array($id_produk,array_keys($_SESSION["cart_item"]))) {
-                    foreach($_SESSION["cart_item"] as $k => $v) {
-                            if($id_produk == $k) {
-                                if(empty($_SESSION["cart_item"][$k]["qty"])) {
-                                    $_SESSION["cart_item"][$k]["qty"] = 0;
-                                }
-                                $_SESSION["cart_item"][$k]["qty"] += $_POST["qty"];
-                            }
-                    }
-                } else {
-                    $_SESSION["cart_item"] = array_merge($_SESSION["cart_item"],$itemArray);
-                }
-            } else {
-                // echo "2";
-                $_SESSION["cart_item"] = $itemArray;
-            }
-            // echo "hake";
-            // print_r($itemArray);
-            
 
-    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,6 +56,7 @@ else{
                         <p style="color: gray;">Alamat: Lorem ipsum dolor sit amet.</p>
                         </div>
                     <hr>
+                    
                     <?php
                         function rupiah($angka){
         
@@ -87,29 +65,46 @@ else{
                         
                         }
                         $totalbayar;
-                        if (!empty($_SESSION["cart_item"])) { 
-                            foreach($_SESSION["cart_item"] as $value){
-                            $total=$value['qty']*$value['harga'];
-                            $totalbayar+=$total;
+                        
+                       
                     ?>
+                    <?php 
+                        $sid = $_SESSION['login'];
+                        $sql1 = "select * from cart_tmp WHERE username=:sid";
+                        $data = $dbh->prepare($sql1);
+                        $data -> bindParam(':sid',$sid);
+                        $data -> execute();
+                    ?>
+                    <?php 
+                    $totalbayar;
+                    while($get=$data->fetch()) {
+                    $total=$get['qty']*$get['harga'];
+                    $totalbayar+=$total;  
+                    ?>
+                    
                     <div class="row">
                         <div class="col-md">
-                            <img src="./assets/img/produk1.jpg" alt="" class="mx-auto w-50 rounded">
+                            <img src="./admin/img/<?= $get['gambar'] ?>" alt="" class="mx-auto w-50 rounded">
                         </div>
                         <div class="col-md">
                             <label for="">Nama Barang</label>
-                            <p style="color: gray;font-size: 18px;"><?php echo $value['nama_produk'];?></p>
+                            <p style="color: gray;font-size: 18px;"><?php echo $get['nama_produk'];?></p>
                         </div>
                         <div class="col-md">
                             <label for="">Jumlah</label>
-                            <p style="color: gray;font-size: 18px;"><?php echo $value['qty'];?></p>
+                            <p style="color: gray;font-size: 18px;"><?php echo $get['qty'];?></p>
                         </div>
                         <div class="col-md" id="harga">
                             <label for="">Harga</label>
                             <p style="color: gray;font-size: 18px;"><?php echo rupiah($total);?></p>
                         </div>
+                        <div class="col-md">
+                            <label>Action</label>
+                            <p><a href="keranjang.php?del=<?php echo $get['id_cart_tmp'];?>" onclick="return confirm('Do you want to delete');" class="btn btn-sm btn-danger">Delete</a></p>
+                        </div>
                     </div>
-                    <?php }} ?>
+                    <?php }?>
+                    
                     <hr>
                     <div class="text-right">
                         <p>Subtotal : <?php echo rupiah($totalbayar);?>
@@ -204,4 +199,3 @@ else{
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
-<?php } ?>

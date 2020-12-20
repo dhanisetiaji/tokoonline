@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    include('include/koneksi.php');
+    include('./include/koneksi.php');
     error_reporting(0);
 ?>
 <!DOCTYPE html>
@@ -53,10 +53,11 @@
                 <div class="col-md-5">
                     <div class="card border-0">
                         <div class="card-body">
-                        <form method="POST" action="keranjang.php">
+                        <form id="formcart" method="POST" action="actionkeranjang.php?act=tambah"  enctype="multipart/form-data">
                             <input type="hidden" name="id_produk" value="<?= $res->id; ?>"/>
                             <input type="hidden" name="nama_produk" value="<?= $res->nama_produk; ?>"/>
                             <input type="hidden" name="harga" value="<?= $res->harga_produk; ?>"/>
+                            <input type="hidden" name="gambar" value="<?= $res->gambar_produk; ?>"/>
                             <h3><?php echo htmlentities($res->nama_produk);?></h3>
                               <hr>
                               <p>Stok : <?php echo htmlentities($res->stok_produk);?></p>
