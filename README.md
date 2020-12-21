@@ -13,4 +13,4 @@
 - Username : admin
 - Password : 123
 
-# Progress 60%
+# SELESAI. JANGAN LUPA UPDATE DB
