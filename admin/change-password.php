@@ -135,7 +135,7 @@ else{
                         <label for="">Konfirmasi Password</label>
                         <input type="password" name="confirmpassword" class="form-control" required>
                 </div>
-                </div>
+              </div>
                 <div class="col-md-6">
                     <button Type="submit" name="submit" class="btn btn-primary mt-4">Save</button>
                     <button Type="reset" class="btn btn-danger mt-4">Reset</button>

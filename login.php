@@ -38,7 +38,7 @@ if(isset($_POST['daftar'])){
     $query->bindParam(':nama',$nama,PDO::PARAM_STR);
     $query->bindParam(':alamat',$alamat,PDO::PARAM_STR);
     $query->bindParam(':kodepos',$kodepos,PDO::PARAM_STR);
-    $query->bindParam(':telepon',$email,PDO::PARAM_STR);
+    $query->bindParam(':telepon',$telepon,PDO::PARAM_STR);
     $query->execute();
     $lastInsertId = $dbh->lastInsertId();
     if($lastInsertId){
@@ -136,7 +136,7 @@ if(isset($_POST['daftar'])){
                                             </div>
                                             <div class="form-group">
                                                 <label for="">No telepon</label>
-                                                <input type="text" name="telepon" class="form-control">
+                                                <input type="number" name="telepon" class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <button name="daftar" class="btn btn-primary w-100">DAFTAR</button>

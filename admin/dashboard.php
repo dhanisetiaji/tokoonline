@@ -1,7 +1,7 @@
 <?php
 session_start();
 error_reporting(0);
-include('inc/koneksi.php');
+include('../include/koneksi.php');
 if(strlen($_SESSION['alogin'])==0)
 	{	
 header('location:index.php');
@@ -95,14 +95,19 @@ else{
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                <?php
+                  $qorder = "select * from transaksi";
+                  $order = $dbh->prepare($qorder);
+                  $order->execute();
+                ?>
+                <h3><?= $order->rowCount();?></h3>
 
                 <p>New Orders</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="sold.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -110,14 +115,19 @@ else{
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+              <?php
+                  $qsold = "select * from product_sold";
+                  $sold = $dbh->prepare($qsold);
+                  $sold->execute();
+                ?>
+                <h3><?= $sold->rowCount();?></h3>
 
-                <p>Bounce Rate</p>
+                <p>Product Sold</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="transaksi.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -125,7 +135,12 @@ else{
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>44</h3>
+              <?php
+                  $quser = "select * from users";
+                  $user = $dbh->prepare($quser);
+                  $user->execute();
+                ?>
+                <h3><?= $user->rowCount();?></h3>
 
                 <p>User Registrations</p>
               </div>
@@ -140,14 +155,19 @@ else{
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>65</h3>
+              <?php
+                  $qprod = "select * from product";
+                  $prod = $dbh->prepare($qprod);
+                  $prod->execute();
+                ?>
+                <h3><?= $prod->rowCount();?></h3>
 
-                <p>Unique Visitors</p>
+                <p>Total Product</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="produk.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

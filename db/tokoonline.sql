@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 20 Des 2020 pada 12.58
+-- Waktu pembuatan: 21 Des 2020 pada 18.43
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.2.33
 
@@ -41,6 +41,22 @@ CREATE TABLE `admin` (
 
 INSERT INTO `admin` (`id`, `Username`, `Password`, `RegisDate`, `UpdateDate`) VALUES
 (1, 'admin', '202cb962ac59075b964b07152d234b70', '2020-12-16 09:18:22', '2020-12-16 10:44:43');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `cart_tmp`
+--
+
+CREATE TABLE `cart_tmp` (
+  `id_cart_tmp` int(100) NOT NULL,
+  `id_produk` varchar(10) NOT NULL,
+  `nama_produk` varchar(120) NOT NULL,
+  `qty` int(5) NOT NULL,
+  `gambar` varchar(200) NOT NULL,
+  `harga` int(11) NOT NULL,
+  `username` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -90,6 +106,32 @@ INSERT INTO `product` (`id`, `nama_produk`, `id_kategori`, `deskripsi_produk`, `
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `product_sold`
+--
+
+CREATE TABLE `product_sold` (
+  `id` int(11) NOT NULL,
+  `id_customer` int(11) NOT NULL,
+  `nama_produk` varchar(120) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `harga` varchar(20) NOT NULL,
+  `total` varchar(20) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `product_sold`
+--
+
+INSERT INTO `product_sold` (`id`, `id_customer`, `nama_produk`, `qty`, `harga`, `total`, `date`) VALUES
+(3, 1, 'NASA Sweater', 2, '250000', '500000', '2020-12-21 15:13:45'),
+(4, 1, 'H&M Polos Hitam', 1, '250000', '250000', '2020-12-21 15:13:45'),
+(5, 1, 'Anti Social Social Club', 1, '1250000', '1250000', '2020-12-21 16:33:12'),
+(6, 4, 'H&M Polos Hitam', 2, '250000', '500000', '2020-12-21 17:35:05');
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `slider`
 --
 
@@ -118,11 +160,21 @@ INSERT INTO `slider` (`id`, `nama`, `gambar_slider`, `UpdateDate`) VALUES
 CREATE TABLE `transaksi` (
   `id` int(11) NOT NULL,
   `id_customer` int(11) NOT NULL,
-  `id_produk` int(11) NOT NULL,
-  `tgl_transaksi` timestamp NOT NULL DEFAULT current_timestamp(),
-  `jumlah` int(11) NOT NULL,
-  `total` int(11) NOT NULL
+  `resi` varchar(120) DEFAULT NULL,
+  `alamat_lengkap` varchar(120) NOT NULL,
+  `totalbayar` varchar(120) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 0,
+  `tanggal_transaksi` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`id`, `id_customer`, `resi`, `alamat_lengkap`, `totalbayar`, `status`, `tanggal_transaksi`) VALUES
+(18, 1, 'J22311222 JNE', 'Jalan Mancasan indah no 7 yogyakarta,08122727312,313123', '772000', 1, '2020-12-21 15:13:45'),
+(19, 1, '', 'Jalan Mancasan indah no 7 yogyakarta,08122727312,313123', '1272000', 0, '2020-12-21 16:33:12'),
+(20, 4, NULL, 'jalan gorongan V no 172,Depok,Sleman, Yogyakarta,08233211222,553281', '522000', 0, '2020-12-21 17:35:04');
 
 -- --------------------------------------------------------
 
@@ -138,16 +190,18 @@ CREATE TABLE `users` (
   `Password` varchar(120) NOT NULL,
   `Alamat` text NOT NULL,
   `Kodepos` varchar(20) NOT NULL,
-  `No_telepon` int(15) NOT NULL,
-  `RegisDate` timestamp NOT NULL DEFAULT current_timestamp()
+  `No_telepon` varchar(120) NOT NULL,
+  `RegisDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `UpdateDate` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `NamaLengkap`, `Email`, `Username`, `Password`, `Alamat`, `Kodepos`, `No_telepon`, `RegisDate`) VALUES
-(1, 'pembeli', 'coba@gmail.com', 'pembeli', '202cb962ac59075b964b07152d234b70', 'asdasdasd', '313123', 0, '2020-12-20 10:30:48');
+INSERT INTO `users` (`id`, `NamaLengkap`, `Email`, `Username`, `Password`, `Alamat`, `Kodepos`, `No_telepon`, `RegisDate`, `UpdateDate`) VALUES
+(1, 'Si Ganteng', 'coba@gmail.com', 'pembeli', '202cb962ac59075b964b07152d234b70', 'Jalan Mancasan indah no 7 yogyakarta', '313123', '08122727312', '2020-12-20 10:30:48', '2020-12-21 16:32:08'),
+(4, 'abdul ajah', 'customer@gmail.com', 'abdul', '202cb962ac59075b964b07152d234b70', 'jalan gorongan V no 172,Depok,Sleman, Yogyakarta', '553281', '08233211222', '2020-12-21 17:34:12', '2020-12-21 17:34:28');
 
 --
 -- Indexes for dumped tables
@@ -160,6 +214,12 @@ ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeks untuk tabel `cart_tmp`
+--
+ALTER TABLE `cart_tmp`
+  ADD PRIMARY KEY (`id_cart_tmp`);
+
+--
 -- Indeks untuk tabel `kategori`
 --
 ALTER TABLE `kategori`
@@ -169,6 +229,12 @@ ALTER TABLE `kategori`
 -- Indeks untuk tabel `product`
 --
 ALTER TABLE `product`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indeks untuk tabel `product_sold`
+--
+ALTER TABLE `product_sold`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -200,6 +266,12 @@ ALTER TABLE `admin`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT untuk tabel `cart_tmp`
+--
+ALTER TABLE `cart_tmp`
+  MODIFY `id_cart_tmp` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
 -- AUTO_INCREMENT untuk tabel `kategori`
 --
 ALTER TABLE `kategori`
@@ -212,6 +284,12 @@ ALTER TABLE `product`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT untuk tabel `product_sold`
+--
+ALTER TABLE `product_sold`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT untuk tabel `slider`
 --
 ALTER TABLE `slider`
@@ -221,13 +299,13 @@ ALTER TABLE `slider`
 -- AUTO_INCREMENT untuk tabel `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

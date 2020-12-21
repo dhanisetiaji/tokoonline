@@ -48,12 +48,19 @@ if(strlen($_SESSION['login'])==0){
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="font-bold">Checkout</h4>
+                    <?php
+                        $qbuyer= "SELECT * FROM users WHERE username=:sid";
+                        $buyer = $dbh->prepare($qbuyer);
+                        $buyer-> bindParam(':sid',$sid);
+                        $buyer->execute();
+                        $getbuyer = $buyer->fetch();
+                    ?>
                     <div class="p-0 m-1">
                         <p>Alamat pengirim</p>
                         <hr>
-                        <p>Resa harahap</p>
-                        <p>081212322</p>
-                        <p style="color: gray;">Alamat: Lorem ipsum dolor sit amet.</p>
+                        <p><?= $getbuyer['NamaLengkap']?></p>
+                        <p><?= $getbuyer['No_telepon']?></p>
+                        <p style="color: gray;"><?= $getbuyer['Alamat']?>. Kodepos <?= $getbuyer['Kodepos']?></p>
                         </div>
                     <hr>
                     
@@ -100,7 +107,7 @@ if(strlen($_SESSION['login'])==0){
                         </div>
                         <div class="col-md">
                             <label>Action</label>
-                            <p><a href="keranjang.php?del=<?php echo $get['id_cart_tmp'];?>" onclick="return confirm('Do you want to delete');" class="btn btn-sm btn-danger">Delete</a></p>
+                            <p><a href="keranjang.php?del=<?php echo $get['id_cart_tmp'];?>" onclick="return confirm('Do you want to delete');" class="btn btn-sm btn-danger"><i class="la la-trash-alt"></i></a></p>
                         </div>
                     </div>
                     <?php }?>
@@ -128,14 +135,15 @@ if(strlen($_SESSION['login'])==0){
                             <hr>
                             <div class="d-flex justify-content-between">
                                 <p>Total Pembayaran</p>
-                                <p><?php echo rupiah($totalbayar);?></p>
+                                <p><?php echo rupiah($totalbayar+22000);?></p>
                             </div>
-                            <a href="Metode Pembayaran.html"><button class="btn btn-primary w-100 font-weight-bolder">BELI</button></a>
+                            <form action="actioncheckout.php?act=selesai" method="post">
+                            <input type="hidden" name="id_customer" value="<?= $getbuyer['id']?>">
+                            <input type="hidden" name="alamat_lengkap" value="<?= $getbuyer['Alamat']?>,<?= $getbuyer['No_telepon']?>,<?= $getbuyer['Kodepos']?>">
+                            <input type="hidden" name="totalbayar" value="<?= $totalbayar+22000;?>">
+                            <button type="submit" name="submit" class="btn btn-primary w-100 font-weight-bolder">Checkout!</button>
+                            </form>
                             <div class="input-group m-3">
-                                <div class="input-group-prepend">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon1"><i class="las la-gift"></i></button>
-                                </div>
-                                <input type="text" class="form-control" placeholder="voucher" aria-label="voucher" aria-describedby="basic-addon1">
                               </div>
                         </div>
                     </div>

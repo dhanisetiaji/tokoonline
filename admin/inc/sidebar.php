@@ -48,6 +48,14 @@
             </a>
           </li>
           <li class="nav-item">
+            <a href="sold.php" class="nav-link">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>
+                Produk Terjual
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="transaksi.php" class="nav-link">
               <i class="nav-icon fas fa-shopping-cart"></i>
               <p>
