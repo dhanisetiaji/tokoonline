@@ -150,7 +150,7 @@ else{
                     <td><?php echo htmlentities($res->RegisDate);?></td>
                     <td>
                          <!-- <a href="change-produk.php?id=<?php echo $res->id;?>" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a> -->
-                         <a href="sold.php?del=<?php echo $res->id;?>" onclick="return confirm('Do you want to delete');" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                         <a href="users.php?del=<?php echo $res->id;?>" onclick="return confirm('Do you want to delete');" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
                     </td>
                   </tr>
                   <?php $nmr=$nmr+1; } } ?>
